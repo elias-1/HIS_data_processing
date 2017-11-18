@@ -22,18 +22,22 @@ logger = Logger.Logger().get_logger()
 timecfg = TimeConfig.TimeConfig()
 
 pg_conn = psycopg2.connect(
-    'dbname=kgdata user=dbuser password=112233 host=127.0.0.1')
+    'dbname=clinicaldata user=dbuser password=112233 host=127.0.0.1')
 
 
 def create_pg_table():
     try: 
         sql = """CREATE TABLE property (
                       id SERIAL PRIMARY KEY,
-                      entity_id varchar(20) not null,
-                      entity_type varchar(50) not null,
-                      property_name varchar(50) not null,
-                      property_value varchar(2000) not null
-    
+                      pat_num varchar(20) not null,
+                      provider_id varchar(20) not null,
+                      start_date date,
+                      end_date date,
+                      concept_cd varchar(50) not null,
+                      modifier_cd varchar(50),
+                      tval_char varchar(50),
+                      nval_num varchar(50),
+                      units_cd varchar(50),
                   )
         """
     
@@ -88,8 +92,17 @@ class Task(object):
                 or_cursor.close()
 
     def _insert2pgdb(self, data):
-        sql = """INSERT INTO property (entity_id, entity_type, property_name, property_value)
-                             VALUES (%s, %s, %s, %s);"""
+        sql = """INSERT INTO property (
+                      pat_num,
+                      provider_id,
+                      start_date,
+                      end_date,
+                      concept_cd,
+                      modifier_cd,
+                      tval_char,
+                      nval_num,
+                      units_cd)
+                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);"""
         try:
             cur = pg_conn.cursor()
             # execute the INSERT statement

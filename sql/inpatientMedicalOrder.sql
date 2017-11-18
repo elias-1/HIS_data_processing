@@ -1,0 +1,360 @@
+select c.card_no, --@old_pid@
+--##a.inpatient_no, -- 住院流水号 @inpatient_id@
+--##a.patient_no, -- 住院病历号 @patient_no@
+--##a.dept_code, -- 住院科室代码 @inhos_dept_id@
+--##a.nurse_cell_code, -- 住院护理站代码 @nurse_station_id@
+--##a.list_dpcd, -- 开立科室代码 @dept_id@
+--##a.mo_order, -- 医嘱流水号 @mo_order@
+a.doc_code, -- 医嘱医师代号 @doctor.id@
+--##a.doc_name, -- 医嘱医师姓名 @doctor.name@
+--##a.mo_date, -- 医嘱日期 @mo_date@
+--##a.baby_flag, -- 是否婴儿医嘱,1是/0否 @baby_flag@
+--##a.happen_no, -- 婴儿序号 @happen_no@
+--##a.set_itmattr, -- 项目属性,1院内项目/2院外项目 @set_itmattr@
+--##a.set_subtbl, -- 是否包含附材,1是/0否 @set_subtbl@
+--##a.type_code, -- 医嘱类别代码 @[MO_TYPE]type.id@
+--##a.type_name, -- 医嘱类别名称 @type.name@
+--##a.decmps_state, -- 医嘱是否分解:1长期/0临时 @decmps_state@
+--##a.charge_state, -- 是否计费 @charge_state@
+--##a.need_drug, -- 药房是否配药 @need_drug@
+--##a.prn_exelist, -- 打印执行单 @prn_exelist@
+--##a.prm_morlist, -- 是否打印医嘱单 @prm_morlist@
+--##a.need_confirm, -- 是否需要确认 @need_confirm@
+--##a.item_type, -- 项目类别 @item.type@ 1-药品,2-非药品
+--##a.item_code, -- 项目编码 @映射并转换成收费项目国标编码gb_id/CDR药品统一编码写入CDR的item.id@
+a.item_name, -- 项目名称 @item.name@
+--##a.class_code, -- 项目类别代码 @[NEW_MO_CLASS]class.id@
+--##a.class_name, -- 项目类别名称 @class.name@
+--##a.pharmacy_code, -- 取药药房 @pharmacy_id@
+--##a.exec_dpcd, -- 执行科室代码 @exec_dept.id@
+--##a.exec_dpnm, -- 执行科室名称 @exec_dept.name@
+--##a.base_dose, -- 药品基本剂量 @base_dose@
+a.dose_unit, -- 剂量单位 @dose_unit@
+--##a.min_unit, -- 最小单位 @min_unit@   ×××应该到药品表×××
+--##a.price_unit, -- 计价单位 @price_unit@
+--##a.pack_qty, -- 包装数量 @pack_qty@
+--##a.specs, -- 规格 @specs@
+--##a.dose_model_code, -- 剂型代码 @[DOSAGEFORM]dose_form.id,dose_form.name@
+--##a.drug_type, -- 药品类别 @[ITEMTYPE]drug.type@
+--##a.drug_quality, -- 药品性质 @[DRUGQUALITY]drug.property@
+--##a.item_price, -- 价格 @item_price@
+--##a.comb_no, -- 组合序号 @comb_no@
+--##a.main_drug, -- 主药标记 @main_drug@
+--##a.mo_stat, -- 医嘱状态,0开立，1审核，2执行，3作废，4重整 @[NEW_MO_STATE]mo_stat.id,mo_stat.name@
+--##a.usage_code, -- 用法代码 @[USAGE]use.id@
+--##a.use_name, -- 用法名称 @[USAGE]use.name@
+--##a.english_ab, -- 用法英文缩写 @use.english@
+--##a.frequency_code, -- 频次代码 @[NEW_FREQUENCY]freq.id@
+--##a.frequency_name, -- 频次名称 @[NEW_FREQUENCY]freq.name@
+a.dose_once, -- 每次剂量 @dose_once@
+--##a.stock_min, -- 1扣护士站常备药/2扣药房 @stock_min@
+--##decode(b.DECMPS_STATE,1,b.QTY_TOT,a.QTY_TOT) as qty, -- 项目总量 @qty@
+--##a.use_days, -- 付数 @days@
+--##a.date_bgn, -- 开始时间 @date.begin@
+--##a.date_end, -- 结束时间 @date.end@
+--##a.rec_usercd, -- 录入人员代码 @rec_usercd@
+--##a.rec_usernm, -- 录入人员姓名 @rec_usernm@
+--##a.confirm_flag, -- 确认标记,0未确认/1已 @confirm.flag@
+--##a.confirm_date, -- 确认时间 @confirm.date@
+--##a.confirm_usercd, -- 确认人员代码 @confirm.user_id@
+--##a.dc_flag, -- Dc标记 0未dc/1已dc @dc_flag@
+--##a.dc_date, -- Dc时间 @dc_date@
+--##a.dc_code, -- DC原因代码 @dc_code@
+--##a.dc_name, -- DC原因名称 @[NEW_DC_CODE]dc.id,dc.name@
+--##a.dc_doccd, -- DC医师代码 @dc_doctid@
+--##a.dc_docnm, -- DC医师姓名 @dc_docname@
+--##a.dc_usercd, -- Dc人员代码 @dc_userid@
+--##a.dc_usernm, -- Dc人员名称 @dc_username@
+--##a.execute_flag, -- 执行标记 0未执行/1已执行 @exec.flag@
+--##a.execute_date, -- 执行时间 @exec.date@
+--##a.execute_usercd, -- 执行人员代码 @exec.operid@
+--##a.deco_flag, -- 整档标记 0无/1有 @deco_flag@
+--##a.date_curmodc, -- 本次分解时间 @date_curmodc@
+--##a.date_nxtmodc, -- 下次分解时间 @date_nxtmodc@
+--##a.mo_note1, -- 医嘱说明 @mo_note1@
+--##a.mo_note2, -- 备注 @remark@
+--##a.hypotest, -- 1不需要皮试/2需要皮试，未做/3皮试阳/4皮试阴 @[NEW_HYPOTEST]hypotest@
+--##a.item_note, -- 检查部位/检体 @[CHECKPART/SAMPLE,多个值用,分割,cdr存成嵌入文档数组]item_note.id,item_note.name@
+--##a.apply_no, -- 申请单号 @apply_no@
+--##a.emc_flag, -- 加急标记: 0普通/1加急 @emc_flag@
+--##a.get_flag, -- 医嘱提取标记: 0待提取/1已提取/2DC提取 @get_flag@
+--##a.subtbl_flag, -- 是否附材'1'是 @subtbl_flag@
+--##a.sort_id, -- 排列序号，按排列序号由大到小顺序显示医嘱 @sort_id@
+--##a.dc_confirm_date, -- DC审核时间 @dc_confirm_date@
+--##a.dc_confirm_oper, -- DC审核人 @dc_confirm_oper@
+--##a.dc_confirm_flag, -- DC审核标记，0未审核，1已审核 @dc_confirm_flag@
+--### a.lab_code, -- 样本类型 名称 @lab_code@
+--##a.permission, -- 是否需要患者同意 0 不需要  1需要 @permission@
+--##a.package_code, -- 组套编码 @package_code@没有值
+--##a.package_name, -- 组套名称 @package_name@没有值
+--##a.mark1, -- 扩展备注  [执行时间] @mark1@
+--##a.mark2, -- 扩展备注1 @mark2@
+--##a.mark3, -- 扩展备注2 @mark3@
+--##a.exec_times, -- 执行时间点[特殊频次] @需要按-split,存成数组exec_times@
+--##a.exec_dose, -- 执行剂量[特殊频次] @exec_dose@
+--##a.mark4, -- 双签字 @mark4@
+--##b.exec_sqn, -- 执行单流水号 @exec_sqn@
+--### b.dept_code, -- 住院科室代码 @inhos_dept_id@
+--###b.nurse_cell_code, -- 医嘱护理站代码 @nurse_station_id@
+--### b.list_dpcd, -- 开立科室代码 @mo_dept_id@
+--### b.inpatient_no, -- 住院流水号 @inpatient_id@
+--##b.patient_no, -- 住院病历号 @patient_no@
+--### b.mo_order, -- 医嘱流水号 @mo_order@
+--### b.doc_code, -- 医嘱医师代号 @doct.id@
+--### b.doc_name, -- 医嘱医师姓名 @doct.name@
+--### b.mo_date, -- 医嘱日期 @mo_date@
+--##b.baby_flag, -- 是否婴儿医嘱 @baby_flag@
+--##b.happen_no, -- 婴儿序号 @seq_no@
+--##b.set_itmattr, -- 项目属性 @set_itmattr@
+--##b.set_subtbl, -- 是否包含附材 @set_subtbl@
+--### b.type_code, -- 医嘱类别代码 @[MO_TYPE]type.id,type.name@
+--##b.decmps_state, -- 医嘱是否分解 @decompose.flag@ 比如医生开一天一次，三天  把长期医嘱分解为一条条数据。
+--##b.deco_date, -- 分解时间 @decompose.date@
+--##b.charge_state, -- 是否计费 @charge_state@
+--##b.need_drug, -- 药房是否配药 @need_drug@
+--##b.prn_exelist, -- 打印执行单 @prt_exelist@
+--##b.prn_morlist, -- 是否打印医嘱单 @prt_morlist@
+--##b.need_confirm, -- 是否需要确认 @need_confirm@
+--###b.drug_code, -- 药品编码 @item_id@
+--### b.drug_name, -- 药品名称 @item_name@
+--### b.base_dose, -- 药品基本剂量 @base_dose@
+--### b.dose_unit, -- 剂量单位 @dose_unit@
+--### b.min_unit, -- 最小单位 @min_unit@
+--### b.price_unit, -- 计价单位 @price_unit@
+--### b.pack_qty, -- 包装数量 @pack_qty@
+--### b.specs, -- 规格 @spec@
+--### b.dose_model_code, -- 剂型代码 @[DOSAGEFORM]dose_form.id,dose_form.name@
+--### b.drug_type, -- 西药/中成/草/直支药品 @[ITEMTYPE]drug_type.id,drug_type.name@
+--### b.drug_quality, -- 药品性质 @[DRUGQUALITY]drug_property@
+--##b.item_price, -- 零售价 @item_price@
+--##b.stock_min, -- 1护士站常备/2扣药房 @stock_min@
+--### b.comb_no, -- 组合序号 @comb_no@
+--### b.main_drug, -- 主药标记 @main_drug@
+--### b.usage_code, -- 用法代码 @[USAGE]usage.id@
+--### b.use_name, -- 用法名称 @[USAGE]usage.name@
+--##b.english_ab, -- 用法英文缩写 @english_ab@
+--### b.frequency_code, -- 频次代码 @[NEW_FREQUENCY]freq.id@
+--### b.frequency_name, -- 频次名称 @[NEW_FREQUENCY]freq.name@
+--### b.dose_once, -- 每次剂量 @dose_once@
+--### b.use_days, -- 付数 @use_days@
+--### b.qty_tot, -- 药品用量 @qty@
+b.use_time -- 要求执行时间 @use_time@
+--### b.pharmacy_code, -- 取药药房 @stock_id@
+--### b.exec_dpcd, -- 执行科室 @exec_deptid@
+--##b.valid_flag, -- 1有效/0作废 @cancel.flag@
+--##b.valid_date, -- 作废时间 @cancel.date@
+--##b.valid_usercd, -- 作废人代码 @cancel.oper_id@
+--##b.druged_flag, -- 0不需发送/1集中发送/2分散发送/3已配药 @druged.flag@
+--##b.druged_date, -- 配药时间 @druged.date@
+--##b.druged_usercd, -- 配药人员代码 @druged.operid@
+--##b.druged_deptcd, -- 配药科室代码 @druged.dept_id@
+--##b.prn_flag, -- 0未打印/1已打印 @prt_flag@
+--##b.prn_date, -- 打印日期 @prt_date@
+--##b.prn_usercd, -- 打印人员代码 @prt_operid@
+--##b.prn_deptcd, -- 打印科室代码 @prt_deptid@
+--##b.set_code, -- 配药单组别代码 @set_id@
+--##b.set_seqn, -- 配药单号 @set_seqn@
+--##b.exec_flag, -- 0待执行/1已执行 @exec_flag@
+--##b.exec_date, -- 执行时间 @exec_date@
+--##b.exec_usercd, -- 执行护士代码 @exec_oper_id@
+--##b.exec_deptcd, -- 执行科室代码 @exec_dept_id@
+--##b.exec_prnflag, -- 0未打印/1已 - 输液卡 @exec_prtflag@
+--##b.exec_prndate, -- 执行单打印时间 @exec_prtdate@
+--##b.exec_prnusercd, -- 执行单打印人员 @exec_prtoperid@
+--##b.charge_flag, -- 记账标记 @charge_flag@
+--##b.charge_date, -- 记账时间 @charge_date@
+--##b.charge_usercd, -- 记账人代码 @charge_operid@
+--##b.charge_deptcd, -- 记账科室代码 @charge_deptid@
+--##b.recipe_no, -- 处方流水号 @recipe_no@
+--##b.sequence_no, -- 处方内流水号 @seq_no@
+--##b.mo_note1, -- 医嘱说明 @dc.id,dc.name - mo_note1@
+--##b.mo_note2, -- 备注 @remark@
+--##b.charge_prnflag, -- 收费发送单打印标记 @charge_prnflag@
+--##b.charge_prndate, -- 收费发送单打印日期 @charge_prndate@  没有值
+--##b.charge_prnusercd, -- 收费发送单打印人员 @charge_prnusercd@  没有值
+--##b.circult_prnflag, -- 巡回卡打印标记 @circult_prtflag@ 没有值
+--##b.compound_flag-- 是否需配液 ‘1’ 是 0 否 @compound_flag@
+--##b.compound_exec, -- 是否配液已执行 1 是 0 否 @compound_exec@全为0
+--##b.compound_oper, -- 配液执行人 @compound_oper@ 没有值
+--##b.compound_dept, -- 配液科室 @compound_dept@ 没有值
+--##b.compound_date -- 配液时间 @compound_date@ 没有值
+ from met_ipm_order a
+, met_ipm_execdrug b, fin_ipr_inmaininfo c where a.mo_order = b.mo_order
+ and a.inpatient_no = c.inpatient_no
+-- and a.inpatient_no='ZY010001323142'
+-- and a.mo_order='134640060'
+ and b.valid_flag=1
+ and a.mo_date >= to_date('startDate', 'YYYY-MM-DD HH24:MI:SS')
+ and a.mo_date < to_date('endDate', 'YYYY-MM-DD HH24:MI:SS')
+
+union
+
+select c.card_no, --@old_pid@
+--##a.inpatient_no, -- 住院流水号 @inpatient_id@
+--##a.patient_no, -- 住院病历号 @patient_no@
+--##a.dept_code, -- 住院科室代码 @inhos_dept_id@
+--##a.nurse_cell_code, -- 住院护理站代码 @nurse_station_id@
+--##a.list_dpcd, -- 开立科室代码 @dept_id@
+--##a.mo_order, -- 医嘱流水号 @mo_order@
+a.doc_code, -- 医嘱医师代号 @doctor.id@
+--##a.doc_name, -- 医嘱医师姓名 @doctor.name@
+--##a.mo_date, -- 医嘱日期 @mo_date@
+--##a.baby_flag, -- 是否婴儿医嘱,1是/0否 @baby_flag@
+--##a.happen_no, -- 婴儿序号 @happen_no@
+--##a.set_itmattr, -- 项目属性,1院内项目/2院外项目 @set_itmattr@
+--##a.set_subtbl, -- 是否包含附材,1是/0否 @set_subtbl@
+--##a.type_code, -- 医嘱类别代码 @[MO_TYPE]type.id@
+--##a.type_name, -- 医嘱类别名称 @type.name@
+--### a.decmps_state, -- 医嘱是否分解:1长期/0临时 @decmps_state@
+--##a.charge_state, -- 是否计费 @charge_state@
+--##a.need_drug, -- 药房是否配药 @need_drug@
+--##a.prn_exelist, -- 打印执行单 @prn_exelist@
+--##a.prm_morlist, -- 是否打印医嘱单 @prm_morlist@
+--##a.need_confirm, -- 是否需要确认 @need_confirm@
+--##a.item_type, -- 项目类别 @item.type@ 1-药品,2-非药品
+--##a.item_code, -- 项目编码 @映射并转换成收费项目国标编码gb_id/CDR药品统一编码写入CDR的item.id@
+a.item_name, -- 项目名称 @item.name@
+--##a.class_code, -- 项目类别代码 @[NEW_MO_CLASS]class.id@
+--##a.class_name, -- 项目类别名称 @class.name@
+--##a.pharmacy_code, -- 取药药房 @pharmacy_id@
+--##a.exec_dpcd, -- 执行科室代码 @exec_dept.id@
+--##a.exec_dpnm, -- 执行科室名称 @exec_dept.name@
+--### a.base_dose, -- 药品基本剂量 @base_dose@
+a.dose_unit, -- 剂量单位 @dose_unit@
+--##a.min_unit, -- 最小单位 @min_unit@   ×××应该到药品表×××
+--##a.price_unit, -- 计价单位 @price_unit@
+--##a.pack_qty, -- 包装数量 @pack_qty@
+--##a.specs, -- 规格 @specs@
+--### a.dose_model_code, -- 剂型代码 @[DOSAGEFORM]dose_form.id,dose_form.name@
+--##a.drug_type, -- 药品类别 @[ITEMTYPE]drug.type@
+--### a.drug_quality, -- 药品性质 @[DRUGQUALITY]drug.property@
+--##a.item_price, -- 价格 @item_price@
+--##a.comb_no, -- 组合序号 @comb_no@
+--##a.main_drug, -- 主药标记 @main_drug@
+--##a.mo_stat, -- 医嘱状态,0开立，1审核，2执行，3作废，4重整 @[NEW_MO_STATE]mo_stat.id,mo_stat.name@
+--##a.usage_code, -- 用法代码 @[USAGE]use.id@
+--##a.use_name, -- 用法名称 @[USAGE]use.name@
+--##a.english_ab, -- 用法英文缩写 @use.english@
+--##a.frequency_code, -- 频次代码 @[NEW_FREQUENCY]freq.id@
+--##a.frequency_name, -- 频次名称 @[NEW_FREQUENCY]freq.name@
+a.dose_once, -- 每次剂量 @dose_once@
+--##a.stock_min, -- 1扣护士站常备药/2扣药房 @stock_min@
+--##decode(b.DECMPS_STATE,1,b.QTY_TOT,a.QTY_TOT) as qty, -- 药品数量 @qty@
+--###a.use_days, -- 付数 @days@
+--##a.date_bgn, -- 开始时间 @date.begin@
+--##a.date_end, -- 结束时间 @date.end@
+--##a.rec_usercd, -- 录入人员代码 @rec_usercd@
+--##a.rec_usernm, -- 录入人员姓名 @rec_usernm@
+--##a.confirm_flag, -- 确认标记,0未确认/1已 @confirm.flag@
+--##a.confirm_date, -- 确认时间 @confirm.date@
+--##a.confirm_usercd, -- 确认人员代码 @confirm.user_id@
+--##a.dc_flag, -- Dc标记 0未dc/1已dc @dc_flag@
+--##a.dc_date, -- Dc时间 @dc_date@
+--##a.dc_code, -- DC原因代码 @dc_code@
+--##a.dc_name, -- DC原因名称 @[NEW_DC_CODE]dc.id,dc.name@
+--##a.dc_doccd, -- DC医师代码 @dc_doctid@
+--##a.dc_docnm, -- DC医师姓名 @dc_docname@
+--##a.dc_usercd, -- Dc人员代码 @dc_userid@
+--##a.dc_usernm, -- Dc人员名称 @dc_username@
+--##a.execute_flag, -- 执行标记 0未执行/1已执行 @exec.flag@
+--##a.execute_date, -- 执行时间 @exec.date@
+--##a.execute_usercd, -- 执行人员代码 @exec.operid@
+--##a.deco_flag, -- 整档标记 0无/1有 @deco_flag@
+--##a.date_curmodc, -- 本次分解时间 @date_curmodc@
+--##a.date_nxtmodc, -- 下次分解时间 @date_nxtmodc@
+--##a.mo_note1, -- 医嘱说明 @mo_note1@
+--### a.mo_note2, -- 备注 @mo_note2@
+--##a.hypotest, -- 1不需要皮试/2需要皮试，未做/3皮试阳/4皮试阴 @[NEW_HYPOTEST]hypotest@
+--##a.item_note, -- 检查部位/检体 @[CHECKPART/SAMPLE,多个值用,分割,cdr存成嵌入文档数组]item_note.id,item_note.name@
+--##a.apply_no, -- 申请单号 @apply_no@
+--##a.emc_flag, -- 加急标记: 0普通/1加急 @emc_flag@
+--##a.get_flag, -- 医嘱提取标记: 0待提取/1已提取/2DC提取 @get_flag@
+--##a.subtbl_flag, -- 是否附材'1'是 @subtbl_flag@
+--##a.sort_id, -- 排列序号，按排列序号由大到小顺序显示医嘱 @sort_id@
+--##a.dc_confirm_date, -- DC审核时间 @dc_confirm_date@
+--##a.dc_confirm_oper, -- DC审核人 @dc_confirm_oper@
+--##a.dc_confirm_flag, -- DC审核标记，0未审核，1已审核 @dc_confirm_flag@
+--### a.lab_code, -- 样本类型 名称 @lab_code@
+--##a.permission, -- 是否需要患者同意 0 不需要  1需要 @permission@
+--##a.package_code, -- 组套编码 @package_code@没有值
+--##a.package_name, -- 组套名称 @package_name@没有值
+--##a.mark1, -- 扩展备注  [执行时间] @mark1@
+--##a.mark2, -- 扩展备注1 @mark2@
+--##a.mark3, -- 扩展备注2 @mark3@
+--##a.exec_times, -- 执行时间点[特殊频次] @需要按-split,存成数组exec_times@
+--### a.exec_dose -- 执行剂量[特殊频次] @exec_dose@
+--##a.mark4, -- 双签字 @mark4@
+--##b.exec_sqn, -- 执行单流水号 @exec_sqn@
+--### b.dept_code, -- 住院科室代码 @inhos_dept_id@
+--### b.nurse_cell_code, -- 住院护理站代码 @nurse_station_id@
+--### b.list_dpcd, -- 开立科室代码 @mo_dept_id@
+--### b.inpatient_no, -- 住院流水号 @inpatient_id@
+--##b.patient_no, -- 住院病历号 @patient_no@
+--### b.mo_order, -- 医嘱流水号 @mo_order@
+--### b.doc_code, -- 医嘱医师代号 @doct.id@
+--### b.doc_name, -- 医嘱医师姓名 @doct.name@
+--### b.mo_date, -- 医嘱日期 @mo_date@
+--##b.baby_flag, -- 是否婴儿医嘱 @baby_flag@
+--##b.happen_no, -- 婴儿序号 @happen_no@
+--##b.set_itmattr, -- 项目属性 @set_itmattr@
+--##b.set_subtbl, -- 是否包含附材 @set_subtbl@
+--### b.type_code, -- 医嘱类别代码 @[MO_TYPE]type.id,type.name@
+--##b.decmps_state, -- 医嘱是否分解 @decompose.flag@
+--##b.deco_date, -- 分解时间 @decompose.date@
+--##b.charge_state, -- 是否计费 @charge_state@
+--##b.prn_exelist, -- 打印执行单 @prt_exelist@
+--##b.prn_morlist, -- 是否打印医嘱单 @prn_morlist@
+--##b.need_confirm, -- 是否需要确认 @need_confirm@
+--### b.undrug_code, -- 项目代码 @映射并转换成收费项目国标编码gb_id/CDR药品统一编码写入CDR的item.id@
+--### b.undrug_name, -- 项目名称 @item.name@
+--### b.stock_unit, -- 项目单位 @price_unit@
+--### b.comb_no, -- 组合序号 @comb_no@
+--### b.main_drug, -- 主项标记 @main_drug@
+--### b.dfq_freq, -- 频次代码 @[NEWset_codee@
+--### b.dfq_cexp, -- 频次名称 @[NEW_FREQUENCY]freq.name@
+--### b.qty_tot, -- 项目数量 @qty@
+b.use_time -- 要求执行时间 @use_time@
+--### b.exec_dpcd, -- 项目执行科室代码 @exec_deptid@
+--### b.exec_dpnm, -- 项目执行科室名称 @exec_deptname@
+--##b.valid_flag, -- 1有效/0作废 @cancel.flag@
+--##b.valid_date, -- 作废时间 @cancel.date@
+--##b.valid_usercd, -- 作废人代码 @cancel.oper_id@
+--##b.exec_flag, -- 0待执行/1已执行 @exec_flag@
+--##b.exec_date, -- 执行时间 @exec_date@
+--##b.exec_usercd, -- 执行护士代码 @exec_oper_id@
+--##b.exec_deptcd, -- 执行科室代码 @exec_dept_id@
+--##b.exec_prnflag, -- 执行单打印标记 0未打印/1已 @exec_prtflag@
+--##b.exec_prndate, -- 执行单打印时间 @exec_prtdate@
+--##b.exec_prnusercd, -- 执行单打印人员 @exec_prtoperid@
+--##b.charge_flag, -- 记账标记0待记账/1已 @charge_flag@
+--##b.charge_date, -- 记账时间 @charge_date@
+--##b.charge_usercd, -- 记账人代码 @charge_usercd@
+--##b.charge_deptcd, -- 记账科室代码 @charge_deptcd@
+--##b.recipe_no, -- 处方流水号 @recipe_no@
+--##b.sequence_no, -- 处方内流水号 @seq_no@
+--##b.mo_note1, -- 医嘱说明 @mo_note1@
+--##b.mo_note2, -- 备注 @remark@
+--##a.unit_price, -- 项目单价 @unit_price@
+--##a.first_day, -- 首日量标记1是/0否/2节假日 @first_day@
+--### b.class_code, -- 项目类别代码 @[NEW_MO_CLASS]class.id@
+--### b.class_name, -- 项目类别名称 @[NEW_MO_CLASS]class.name@
+--### b.emc_flag, -- 加急标记0普通/1加急 @emc_flag@
+--##a.confirm_flag, -- 确认标记 0未确认/1已确认 @confirm_flag@
+--##a.confirm_date, -- 确认时间 @confirm_date@
+--##a.confirm_usercd, -- 确认人员代码 @confirm_usercd@
+--##a.confirm_deptcd, -- 确认科室代码 @confirm_deptcd@
+--### b.item_note, -- 检查部位检体 @[需要按，分割匹配，LABSAMPLE/CHECKPART]check_body@
+--##b.apply_no, -- 申请单号 @apply_no@
+--##a.subtbl_flag, -- 是否附材'1'是 @subtbl_flag@
+--##b.lab_code-- 样本类型 @[需要按，分割匹配，LABSAMPLE/CHECKPART]lab_type@
+--##b.lab_barcode -- 检验条码号 @lab_barcode@
+--##b.charge_prnflag, -- 收费发送单打印标记 @charge_prnflag@
+--##b.charge_prndate, -- 收费发送单打印时间 @charge_prndate@
+--##b.charge_prnusercd, -- 收费发送单打印人 @charge_prnusercd@
+--##b.circult_prnflag  -- 巡回卡打印标记(用作输血输液卡打印标志) @circult_prnflag@
+from met_ipm_order a
+, met_ipm_execundrug b, fin_ipr_inmaininfo c where a.mo_order = b.mo_order
+and a.inpatient_no = c.inpatient_no
+and b.valid_flag=1
+and a.mo_date >= to_date('startDate', 'YYYY-MM-DD HH24:MI:SS')
+and a.mo_date < to_date('endDate', 'YYYY-MM-DD HH24:MI:SS')

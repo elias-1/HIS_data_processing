@@ -4,7 +4,7 @@
 # Copyright (c) 2017 www.drcubic.com, Inc. All Rights Reserved
 #
 """
-File: InpatientInfo.py
+File: PatientDiagnose.py
 Author: shileicao(shileicao@stu.xjtu.edu.cn)
 Date: 17/11/2017 9:19 PM
 """
@@ -12,13 +12,13 @@ Date: 17/11/2017 9:19 PM
 from export import Task
 
 
-class InpatientInfo(Task.Task):
+class PatientDiagnose(Task.Task):
 
     def __init__(self):
-        super(InpatientInfo, self).__init__()
+        super(PatientDiagnose, self).__init__()
     
     def _get_sql_file(self):
-        return 'sql/inpatientInfo.sql'
+        return 'sql/patientInfo.sql'
 
     def _process_row(self, row):
         pass

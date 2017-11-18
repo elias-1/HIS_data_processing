@@ -4,18 +4,18 @@
 # Copyright (c) 2017 www.drcubic.com, Inc. All Rights Reserved
 #
 """
-File: ClinicalInfo.py
+File: PatientInfo.py
 Author: shileicao(shileicao@stu.xjtu.edu.cn)
-Date: 17/11/2017 9:25 PM
+Date: 17/11/2017 9:19 PM
 """
 
 from export import Task
 
 
-class ClinicalInfo(Task.Task):
+class PatientInfo(Task.Task):
 
     def __init__(self):
-        super(ClinicalInfo, self).__init__()
+        super(PatientInfo, self).__init__()
     
     def _get_sql_file(self):
         return 'sql/inpatientInfo.sql'
