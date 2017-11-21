@@ -1,10 +1,9 @@
 select a.card_no,
        regexp_replace(a.name,'[0-9\* ,，．\.\?？；;０１２３８／]*'),
-       a.birthday,
+       FTrunc(MONTHS_BETWEEN(SYSDATE,a.birthday)/12),
        trim(a.sex_code) as sex_id,
        case when decode(length(regexp_replace(b.idenno, '[^0-9xx]')), 18, 1, 0)=1
        then regexp_replace(b.idenno, '[^0-9xx]') else regexp_replace(a.idenno, '[^0-9xx]') end as id_no,
-       trim(a.prof_code) as prof_id,
        trim(a.home) as home,
        case when regexp_replace(a.home_tel, '[^0-9]') is not null
        then regexp_replace(a.home_tel, '[^0-9]')

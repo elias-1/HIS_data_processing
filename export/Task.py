@@ -37,7 +37,7 @@ def create_pg_table():
                       modifier_cd varchar(50),
                       tval_char varchar(50),
                       nval_num varchar(50),
-                      units_cd varchar(50),
+                      units_cd varchar(50)
                   )
         """
     
@@ -102,11 +102,12 @@ class Task(object):
                       tval_char,
                       nval_num,
                       units_cd)
-                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);"""
+                 VALUES """
         try:
             cur = pg_conn.cursor()
             # execute the INSERT statement
-            cur.execute(sql, data)
+            args_str = ','.join(cur.mogrify("(%s, %s, %s, %s, %s, %s, %s, %s, %s)", x) for x in data)
+            cur.execute(sql+ args_str, data)
             # close communication with the database
             cur.close()
         except (Exception, psycopg2.DatabaseError) as e:
