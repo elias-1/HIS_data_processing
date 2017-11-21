@@ -69,6 +69,6 @@ a.oper_date -- 开立时间 @oper_date@
 --##a.execreson as remark --  @remark@
 --##a.ip_address --  @ip_address@
 from met_ord_recipedetail a 
-where a.oper_date >= TO_date('startDate','YYYY-MM-DD HH24:MI:SS')
-and a.oper_date < TO_date('endDate', 'YYYY-MM-DD HH24:MI:SS')
+where a.oper_date >= TO_date('start_date','YYYY-MM-DD HH24:MI:SS')
+and a.oper_date < TO_date('end_date', 'YYYY-MM-DD HH24:MI:SS')
 

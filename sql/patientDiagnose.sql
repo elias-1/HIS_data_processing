@@ -25,5 +25,5 @@ a.oper_date -- 操作时间 @oper_date@
 --##a.is30disease -- 是否是30种疾病 @is30disease@
 from met_cas_diagnose a
 left join fin_ipr_inmaininfo b on a.inpatient_no=b.inpatient_no
-where a.oper_date >= TO_date('startDate','YYYY-MM-DD HH24:MI:SS')
- and a.oper_date < TO_date('endDate', 'YYYY-MM-DD HH24:MI:SS')
+where a.oper_date >= TO_date('start_date','YYYY-MM-DD HH24:MI:SS')
+ and a.oper_date < TO_date('end_date', 'YYYY-MM-DD HH24:MI:SS')

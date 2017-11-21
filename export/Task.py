@@ -18,16 +18,16 @@ from utils import Logger
 import traceback
 
 import psycopg2
+import time
 Logger = Logger.Logger()
 logger = Logger.get_logger()
 timecfg = TimeConfig.TimeConfig()
 
-pg_conn = psycopg2.connect(
-    'dbname=clinicaldata user=dbuser password=112233 host=127.0.0.1')
-
 
 def create_pg_table():
-    try: 
+    pg_conn = psycopg2.connect(
+        'dbname=clinicaldata user=dbuser password=112233 host=127.0.0.1')
+    try:
         sql = """CREATE TABLE clinical_data (
                       id SERIAL PRIMARY KEY,
                       pat_num varchar(20) not null,
@@ -37,7 +37,7 @@ def create_pg_table():
                       concept_cd varchar(50) not null,
                       modifier_cd varchar(50),
                       tval_char varchar(50),
-                      nval_num varchar(50),
+                      nval_num varchar(200),
                       units_cd varchar(50)
                   )
         """
@@ -49,7 +49,9 @@ def create_pg_table():
         # commit the changes
         pg_conn.commit()
     except (Exception, psycopg2.DatabaseError) as error:
-        print(error)
+        logger.error('failed process create_pg_table: ' + error.message)
+    finally:
+        pg_conn.close()
 
 
 class Task(object):
@@ -64,11 +66,13 @@ class Task(object):
 
     def _init_processing_time(self):
         self._start_time = timecfg.read_time('time', 'start')
-        if self._start_time == None:
+        if self._start_time is None:
             self._start_time = '1970-01-01 00:00:00'
         self._end_time = timecfg.read_time('time', 'end')
 
     def export_data(self):
+        pg_conn = psycopg2.connect(
+            'dbname=clinicaldata user=dbuser password=112233 host=127.0.0.1')
         or_cursor = None
         try:
             start_date_str = self.get_start_time()
@@ -78,47 +82,47 @@ class Task(object):
             or_cursor = conn.cursor()
             or_cursor.execute(self._get_sql(start_date_str, end_date_str))
             row = or_cursor.fetchone()
-
+            num = 0
+            start = time.time()
             while row:
                 row = list(row)
                 result_row = self._process_row(row)
-                self._insert2pgdb(result_row)
+                self._insert2pgdb(result_row, pg_conn)
                 row = or_cursor.fetchone()
+                num += 1
+                if num % 1000 == 0:
+                    logger.info(
+                        self._get_sql_file() + \
+                        ': Have processed %d; used time %3.2f seconds' %
+                        (num, time.time()-start))
         except Exception, e:
             traceback.print_exc()
-            logger.error('failed process ' + self.__class__.__name__ + e)
+            logger.error('failed process ' + self._get_sql_file() + e.message)
             raise e
         finally:
             if or_cursor is not None:
                 or_cursor.close()
+            pg_conn.close()
 
-    def _insert2pgdb(self, data):
-        sql = """INSERT INTO clinical_data (
-                      pat_num,
-                      provider_id,
-                      start_date,
-                      end_date,
-                      concept_cd,
-                      modifier_cd,
-                      tval_char,
-                      nval_num,
-                      units_cd)
-                 VALUES """
+    def _insert2pgdb(self, data, pg_conn):
         try:
             cur = pg_conn.cursor()
             # execute the INSERT statement
             args_str = ','.join(cur.mogrify("(%s, %s, %s, %s, %s, %s, %s, %s, %s)", x) for x in data)
-            cur.execute(sql+ args_str, data)
+            cur.execute('INSERT INTO clinical_data '
+                        '(pat_num, provider_id, start_date, end_date, '
+                        'concept_cd, modifier_cd, tval_char, nval_num, '
+                        'units_cd) VALUES ' + args_str)
             # close communication with the database
             cur.close()
         except (Exception, psycopg2.DatabaseError) as e:
             traceback.print_exc()
-            logger.error('failed execute insert2db ' + e)
+            logger.error('failed execute insert2db ' + e.message)
             raise e
 
     def _get_sql(self, start_date, end_date):
+        file_obj = open(self._get_sql_file())
         try:
-            file_obj = open(self._get_sql())
             sql_str = file_obj.read()
             sql_str = sql_str.replace('start_date', start_date)
             sql_str = sql_str.replace('end_date', end_date)

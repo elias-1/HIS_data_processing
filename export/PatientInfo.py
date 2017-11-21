@@ -18,7 +18,7 @@ class PatientInfo(Task.Task):
         super(PatientInfo, self).__init__()
     
     def _get_sql_file(self):
-        return 'sql/inpatientInfo.sql'
+        return 'sql/patientInfo.sql'
 
 
     """
@@ -51,13 +51,13 @@ class PatientInfo(Task.Task):
     """
     def _process_row(self, row):
         results = [
-            row[0], '', row[9], None, 'Name', '', '',  row[1], '',
-            row[0], '', row[9], None, 'Age', '', '',  row[2], '岁',
-            row[0], '', row[9], None, 'Gender', '', '',  row[3], '',
-            row[0], '', row[9], None, 'ID NO', '', '',  row[4], '',
-            row[0], '', row[9], None, 'Home Address', '', '', row[5], '',
-            row[0], '', row[9], None, 'Telephone', '', '',  row[6], '',
-            row[0], '', row[9], None, 'Marital Status ', '', '',  row[7], '',
-            row[0], '', row[9], None, 'NATION', '', '',  row[8], '',
+            [row[0], '', row[9], None, 'Name', '', '',  row[1], ''],
+            [row[0], '', row[9], None, 'Age', '', '',  row[2], '岁'],
+            [row[0], '', row[9], None, 'Gender', '', '',  row[3], ''],
+            [row[0], '', row[9], None, 'ID NO', '', '',  row[4], ''],
+            [row[0], '', row[9], None, 'Home Address', '', '', row[5], ''],
+            [row[0], '', row[9], None, 'Telephone', '', '',  row[6], ''],
+            [row[0], '', row[9], None, 'Marital Status ', '', '',  row[7], ''],
+            [row[0], '', row[9], None, 'NATION', '', '',  row[8], ''],
         ]
         return results

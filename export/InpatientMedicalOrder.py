@@ -22,7 +22,7 @@ class InpatientMedicalOrder(Task.Task):
 
     def _process_row(self, row):
         results = [
-            row[0], row[1], row[5], None, row[2], '', '', row[3], row[4],
+            [row[0], row[1], row[5], None, row[2], '', '', row[3], row[4]],
 
         ]
         return results

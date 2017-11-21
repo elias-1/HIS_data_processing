@@ -184,8 +184,8 @@ b.use_time -- 要求执行时间 @use_time@
 -- and a.inpatient_no='ZY010001323142'
 -- and a.mo_order='134640060'
  and b.valid_flag=1
- and a.mo_date >= to_date('startDate', 'YYYY-MM-DD HH24:MI:SS')
- and a.mo_date < to_date('endDate', 'YYYY-MM-DD HH24:MI:SS')
+ and a.mo_date >= to_date('start_date', 'YYYY-MM-DD HH24:MI:SS')
+ and a.mo_date < to_date('end_date', 'YYYY-MM-DD HH24:MI:SS')
 union
 select c.card_no, --@old_pid@
 --##a.inpatient_no, -- 住院流水号 @inpatient_id@
@@ -354,5 +354,5 @@ from met_ipm_order a
 , met_ipm_execundrug b, fin_ipr_inmaininfo c where a.mo_order = b.mo_order
 and a.inpatient_no = c.inpatient_no
 and b.valid_flag=1
-and a.mo_date >= to_date('startDate', 'YYYY-MM-DD HH24:MI:SS')
-and a.mo_date < to_date('endDate', 'YYYY-MM-DD HH24:MI:SS')
+and a.mo_date >= to_date('start_date', 'YYYY-MM-DD HH24:MI:SS')
+and a.mo_date < to_date('end_date', 'YYYY-MM-DD HH24:MI:SS')
