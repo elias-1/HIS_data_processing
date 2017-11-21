@@ -65,7 +65,7 @@ class Task(object):
         self._start_time = timecfg.read_time('time', 'start')
         if self._start_time == None:
             self._start_time = '1970-01-01 00:00:00'
-        self._end_time = timecfg.read_time('oracle', 'end')
+        self._end_time = timecfg.read_time('time', 'end')
 
     def export_data(self):
         or_cursor = None
