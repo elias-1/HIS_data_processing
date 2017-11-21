@@ -47,7 +47,7 @@ class PatientInfo(Task.Task):
        trim(a.mari) as mari_id,
        trim(a.nation_code) as nation_id,
        a.oper_date
-from com_patientinfo a
+    from com_patientinfo a
     """
     def _process_row(self, row):
         results = [

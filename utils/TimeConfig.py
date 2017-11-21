@@ -14,7 +14,7 @@ from utils import Logger
 import traceback
 import ConfigParser
 
-logger = Logger.Logger().getLogger()
+logger = Logger.Logger().get_logger()
 
 
 class TimeConfig(object):

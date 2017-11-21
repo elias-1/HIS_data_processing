@@ -18,7 +18,11 @@ class InpatientMedicalOrder(Task.Task):
         super(InpatientMedicalOrder, self).__init__()
     
     def _get_sql_file(self):
-        return 'sql/inpatientInfo.sql'
+        return 'sql/inpatientMedicalOrder.sql'
 
     def _process_row(self, row):
-        pass
+        results = [
+            row[0], row[1], row[5], None, row[2], '', '', row[3], row[4],
+
+        ]
+        return results

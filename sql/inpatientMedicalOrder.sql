@@ -186,9 +186,7 @@ b.use_time -- 要求执行时间 @use_time@
  and b.valid_flag=1
  and a.mo_date >= to_date('startDate', 'YYYY-MM-DD HH24:MI:SS')
  and a.mo_date < to_date('endDate', 'YYYY-MM-DD HH24:MI:SS')
-
 union
-
 select c.card_no, --@old_pid@
 --##a.inpatient_no, -- 住院流水号 @inpatient_id@
 --##a.patient_no, -- 住院病历号 @patient_no@
