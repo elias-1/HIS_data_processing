@@ -15,12 +15,14 @@ import traceback
 import ConfigParser
 import os 
 
-logger = Logger.Logger().get_logger()
+Logger = Logger.Logger()
+logger = Logger.get_logger()
 
 os.environ['NLS_LANG'] = 'SIMPLIFIED CHINESE_CHINA.UTF8' 
 
 
 class OracleConn(object):
+
     def __init__(self, db_url='url_his'):
         try:
             cf = ConfigParser.ConfigParser()

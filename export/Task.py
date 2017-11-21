@@ -18,7 +18,8 @@ from utils import Logger
 import traceback
 
 import psycopg2
-logger = Logger.Logger().get_logger()
+Logger = Logger.Logger()
+logger = Logger.get_logger()
 timecfg = TimeConfig.TimeConfig()
 
 pg_conn = psycopg2.connect(
@@ -27,7 +28,7 @@ pg_conn = psycopg2.connect(
 
 def create_pg_table():
     try: 
-        sql = """CREATE TABLE property (
+        sql = """CREATE TABLE clinical_data (
                       id SERIAL PRIMARY KEY,
                       pat_num varchar(20) not null,
                       provider_id varchar(20) not null,
@@ -92,7 +93,7 @@ class Task(object):
                 or_cursor.close()
 
     def _insert2pgdb(self, data):
-        sql = """INSERT INTO property (
+        sql = """INSERT INTO clinical_data (
                       pat_num,
                       provider_id,
                       start_date,
