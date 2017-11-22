@@ -16,6 +16,5 @@ select a.card_no,
 from com_patientinfo a
 left join fin_ipr_inmaininfo b on a.card_no=b.card_no
 where 1=1
-and a.oper_date>=to_date('start_date','YYYY-MM-DD HH24:MI:SS')
-and a.oper_date<to_date('end_date','YYYY-MM-DD HH24:MI:SS')
 and regexp_replace(a.name,'[0-9\* ,，．\.\?？；;０１２３８／]*') is not null
+and substr(a.card_no,1,1) between '0' and '9'

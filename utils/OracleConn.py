@@ -45,6 +45,7 @@ class OracleConn(object):
     def get_db(self):
         return self.conn
 
+
 if __name__ == '__main__':
     oc = OracleConn()
     conn = oc.get_db()

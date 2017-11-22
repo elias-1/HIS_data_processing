@@ -18,6 +18,7 @@ from utils import Logger
 import traceback
 
 import psycopg2
+import ConfigParser
 import time
 Logger = Logger.Logger()
 logger = Logger.get_logger()
@@ -25,8 +26,10 @@ timecfg = TimeConfig.TimeConfig()
 
 
 def create_pg_table():
-    pg_conn = psycopg2.connect(
-        'dbname=clinicaldata user=dbuser password=112233 host=127.0.0.1')
+    cf = ConfigParser.ConfigParser()
+    cf.read('config/config.conf')
+    connect_info = cf.get('postgresql', 'connect')
+    pg_conn = psycopg2.connect(connect_info)
     try:
         sql = """CREATE TABLE clinical_data (
                       id SERIAL PRIMARY KEY,
@@ -71,8 +74,11 @@ class Task(object):
         self._end_time = timecfg.read_time('time', 'end')
 
     def export_data(self):
-        pg_conn = psycopg2.connect(
-            'dbname=clinicaldata user=dbuser password=112233 host=127.0.0.1')
+        cf = ConfigParser.ConfigParser()
+        cf.read('config/config.conf')
+        connect_info = cf.get('postgresql', 'connect')
+
+        pg_conn = psycopg2.connect(connect_info)
         or_cursor = None
         try:
             start_date_str = self.get_start_time()
@@ -80,6 +86,7 @@ class Task(object):
             oracle_conn = OracleConn.OracleConn()
             conn = oracle_conn.get_db()
             or_cursor = conn.cursor()
+            print(self._get_sql(start_date_str, end_date_str))
             or_cursor.execute(self._get_sql(start_date_str, end_date_str))
             row = or_cursor.fetchone()
             num = 0
@@ -95,6 +102,8 @@ class Task(object):
                         self._get_sql_file() + \
                         ': Have processed %d; used time %3.2f seconds' %
                         (num, time.time()-start))
+                    pg_conn.commit()
+
         except Exception, e:
             traceback.print_exc()
             logger.error('failed process ' + self._get_sql_file() + e.message)
