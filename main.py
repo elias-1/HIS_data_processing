@@ -26,9 +26,9 @@ sys.setdefaultencoding('utf8')
 
 __factory = [
     PatientInfo.PatientInfo(),
-    # ClinicalMedicalOrder.ClinicalMedicalOrder(),
-    # InpatientMedicalOrder.InpatientMedicalOrder(),
-    # PatientDiagnose.PatientDiagnose(),
+    ClinicalMedicalOrder.ClinicalMedicalOrder(),
+    InpatientMedicalOrder.InpatientMedicalOrder(),
+    PatientDiagnose.PatientDiagnose(),
 ]
 
 

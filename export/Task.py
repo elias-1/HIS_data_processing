@@ -86,7 +86,7 @@ class Task(object):
             oracle_conn = OracleConn.OracleConn()
             conn = oracle_conn.get_db()
             or_cursor = conn.cursor()
-            print(self._get_sql(start_date_str, end_date_str))
+            # print(self._get_sql(start_date_str, end_date_str))
             or_cursor.execute(self._get_sql(start_date_str, end_date_str))
             row = or_cursor.fetchone()
             num = 0
