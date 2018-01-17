@@ -75,6 +75,7 @@ class PatientDiagnose(Task.Task):
         }
         results = [
             [row[0], row[5], row[4], None, diag_kind[row[1]], '', '疑诊' if row[6] == '1' else '', row[2], ''],
+            [row[0], row[5], row[4], None, diag_kind[row[1]], '', '疑诊' if row[6] == '1' else '', row[3], ''],
 
         ]
         return results

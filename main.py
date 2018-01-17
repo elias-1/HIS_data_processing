@@ -19,12 +19,16 @@ from export import PatientInfo
 from export import ClinicalMedicalOrder
 from export import InpatientMedicalOrder
 from export import PatientDiagnose
+from export import ClinicalLis
+from export import InpatientLis
 
 reload(sys)
 sys.setdefaultencoding('utf8')
 
 
 __factory = [
+    ClinicalLis.ClinicalLis(),
+    InpatientLis.InpatientLis(),
     PatientInfo.PatientInfo(),
     ClinicalMedicalOrder.ClinicalMedicalOrder(),
     InpatientMedicalOrder.InpatientMedicalOrder(),
