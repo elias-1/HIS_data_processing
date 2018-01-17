@@ -32,7 +32,7 @@ class ClinicalLis(Task.Task):
 
     def _process_row(self, row):
         results = [
-            [row[0], row[1], row[2], None, row[3], '', row[5], row[4], row[6]+'||'+row[7]],
+            [row[0], row[1] if row[1] is not None else '', row[2], None, row[3], '', row[5], row[4], (str(row[6])+'||'+str(row[7])).replace('None', '')],
 
         ]
         return results
