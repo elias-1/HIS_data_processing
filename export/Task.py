@@ -37,11 +37,11 @@ def create_pg_table():
                       provider_id varchar(20) not null,
                       start_date date,
                       end_date date,
-                      concept_cd varchar(50) not null,
+                      concept_cd varchar(200) not null,
                       modifier_cd varchar(50),
-                      tval_char varchar(50),
+                      tval_char varchar(200),
                       nval_num varchar(200),
-                      units_cd varchar(50)
+                      units_cd varchar(200)
                   )
         """
     
